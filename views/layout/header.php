@@ -19,21 +19,22 @@
     <header>
         <h1>🌸 AURA BOUTIQUE 🌸</h1>
         <nav>
-            <a href="<?=base_url?>">Inicio</a>
-            <a href="#">Catálogo</a>
-            
+            <a href="<?=base_url?>">Inicio 🏠 </a>
+            <a href="<?=base_url?>producto/catalogo">Catálogo 👗 </a>
+            <a href="<?=base_url?>carrito/index">Carrito 🛒 (<?=Utils::statsCarrito()['count']?>)</a>
+
             <?php if (isset($_SESSION['admin'])): ?>
                 <a href="<?=base_url?>categoria/index" style="color: #ffc8dd;">Gestionar Categorías</a>
                 <a href="<?=base_url?>producto/gestion" style="color: #ffc8dd;">Gestionar Productos</a>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['identity'])): ?>
-                <span style="color: #4e1e04; margin-left: 15px;">Hola, <?= $_SESSION['identity']->nombres ?></span>
-                <a href="<?=base_url?>usuario/logout">Cerrar Sesión</a>
+                <span style="color: #4e1e04; margin-left: 15px;">Hola, <?=$_SESSION['identity']->nombres?> 💕</span>
+                <a href="<?=base_url?>usuario/logout">Cerrar Sesión 🚪 </a>
             <?php else: ?>
-                <a href="<?=base_url?>usuario/registro">Registro</a>
-                <a href="<?=base_url?>usuario/login">Login</a>
+                <a href="<?=base_url?>usuario/registro">Registro 📝</a>
+                <a href="<?=base_url?>usuario/login">Login 🔑</a>
             <?php endif; ?>
-        </nav>
+</nav>
     </header>
     <div class="container">

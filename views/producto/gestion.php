@@ -1,7 +1,7 @@
 <div style="max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
     <h2 style="margin-bottom: 15px; color: #2c3e50;">Gestión de Productos</h2>
 
-    <a href="<?=base_url?>Producto/crear" style="display: inline-block; background: #27ae60; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; margin-bottom: 15px; font-weight: bold;">+ Crear Producto</a>
+    <a href="<?=base_url?>Producto/crear" style="display: inline-block; background: #cdb4db; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; margin-bottom: 15px; font-weight: bold;">+ Crear Producto</a>
 
     <table style="width: 100%; border-collapse: collapse;">
         <thead>

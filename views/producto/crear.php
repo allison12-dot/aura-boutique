@@ -7,7 +7,7 @@
 <?php endif; ?>
 
 <div style="max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <form action="<?=$url_action?>" method="POST" enctype="multipart/form-data">
+    <form action="<?=base_url?>Producto/save" method="POST" enctype="multipart/form-data">
         
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre del producto:</label>
@@ -29,6 +29,7 @@
             <input type="number" name="stock" value="<?= isset($pro) && is_object($pro) ? $pro->stock : ''; ?>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
         </div>
 
+
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Categoría:</label>
             <?php 
@@ -38,21 +39,22 @@
             ?>
             <select name="categoria" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <?php while($cat = $categorias_lista->fetch_object()): ?>
-                    <option value="<?= $cat->id_categoria ?>" <?= isset($pro) && is_object($pro) && $cat->id_categoria == $pro->categoria_id ? 'selected' : ''; ?>>
-                        <?= $cat->nombre ?>
+                    <option value="<?=$cat->id_categoria?>" <?=isset($pro) && is_object($pro) && $cat->id_categoria == $pro->id_categoria ? 'selected' : ''?>>
+                        <?=$cat->nombre?>
                     </option>
                 <?php endwhile; ?>
             </select>
         </div>
 
+
         <div style="margin-bottom: 20px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Imagen del Producto:</label>
             <?php if(isset($pro) && is_object($pro) && !empty($pro->imagen)): ?>
-                <img src="/aura-boutique/uploads/images/<?=$pro->imagen?>" style="width: 80px; height: 80px; object-fit: cover; display: block; margin-bottom: 8px; border-radius: 4px;">
+                <img src="<?=base_url?>uploads/images/<?=$pro->imagen?>" style="width: 80px; height: 80px; object-fit: cover;">
             <?php endif; ?>
             <input type="file" name="imagen" accept="image/*" style="width: 100%;">
         </div>
 
-        <button type="submit" style="background: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%;">Guardar Producto</button>
+        <button type="submit" style="background: #c999af; color: white; padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%;">Guardar Producto</button>
     </form>
 </div>

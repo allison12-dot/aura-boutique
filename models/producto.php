@@ -92,21 +92,18 @@ class Producto {
         $productos = $this->db->query("SELECT * FROM productos ORDER BY id_producto DESC;");
         return $productos;
     }
-
     public function getOne() {
-        $producto = $this->db->query("SELECT * FROM productos WHERE id_producto = {$this->getId()};");
+        $producto = $this->db->query("SELECT * FROM productos WHERE id_producto = {$this->id}");
         return $producto->fetch_object();
     }
 
     public function save() {
-        $sql = "INSERT INTO productos VALUES(NULL, {$this->getCategoriaId()}, '{$this->getNombre()}', '{$this->getDescripcion()}', {$this->getPrecio()}, {$this->getStock()}, 'normal', CURDATE(), '{$this->getImagen()}');";
-        $save = $this->db->query($sql);
-
-        $result = false;
-        if ($save) {
-            $result = true;
-        }
-        return $result;
+        $imagen = $this->getImagen() ? "'{$this->getImagen()}'" : "NULL";
+        
+        $sql = "INSERT INTO productos (id_categoria, nombre, descripcion, precio, stock, imagen, estado, fecha_creacion) 
+                VALUES({$this->getCategoriaId()}, '{$this->getNombre()}', '{$this->getDescripcion()}', {$this->getPrecio()}, {$this->getStock()}, {$imagen}, 'activo', CURDATE());";
+        
+        return $this->db->query($sql) ? true : false;
     }
 
     public function edit() {
@@ -118,9 +115,9 @@ class Producto {
 
         $sql .= " WHERE id_producto={$this->id};";
 
-        $save = $this->db->query($sql);
-        return $save ? true : false;
+        return $this->db->query($sql) ? true : false;
     }
+
 
     public function delete() {
         $sql = "DELETE FROM productos WHERE id_producto={$this->id};";

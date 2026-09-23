@@ -52,8 +52,8 @@ class ProductoController {
         }
     }
 
-    public function save() {
-        if (isset($_SESSION['admin']) && isset($_POST)) {
+   public function save() {
+        if (isset($_SESSION['admin']) && $_POST) {
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : false;
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : false;
             $precio = isset($_POST['precio']) ? $_POST['precio'] : false;
@@ -74,24 +74,29 @@ class ProductoController {
                     $filename = $file['name'];
                     $mimetype = $file['type'];
 
-                    if ($mimetype == "image/jpg" || $mimetype == "image/jpeg" || $mimetype == "image/png" || $mimetype == "image/gif") {
+                    if ($mimetype == "image/jpg" || $mimetype == "image/jpeg" || $mimetype == "image/png" || $mimetype == "image/gif" || $mimetype == "image/webp") {
                         if (!is_dir('uploads/images')) {
                             mkdir('uploads/images', 0777, true);
                         }
                         move_uploaded_file($file['tmp_name'], 'uploads/images/' . $filename);
+                        
+                        // ASIGNAMOS EL NOMBRE REAL DEL ARCHIVO
                         $producto->setImagen($filename);
                     }
                 }
 
+                // SI ESTAMOS EDITANDO UN PRODUCTO EXISTENTE
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $producto->setId($id);
                     $save = $producto->edit();
                 } else {
+                    // SI ES UN PRODUCTO NUEVO
                     $save = $producto->save();
                 }
             }
         }
+
         header("Location: " . base_url . "Producto/gestion");
     }
 
@@ -104,4 +109,12 @@ class ProductoController {
         }
         header("Location: " . base_url . "Producto/gestion");
     }
+
+    public function catalogo() {
+        $producto = new Producto();
+        $productos = $producto->getAll();
+
+        require_once 'views/producto/catalogo.php';
+    }
 }
+
