@@ -18,7 +18,10 @@
 
     <div style="margin-bottom: 15px;">
         <label for="password" style="display:block; margin-bottom: 5px;">Contraseña:</label>
-        <input type="password" name="password" required style="width: 100%; padding: 8px;">
+        <input type="password" name="password" required 
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}" 
+               title="Debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, un número y un carácter especial (@$!%*?&)." 
+               style="width: 100%; padding: 8px;">
     </div>
 
     <button type="submit" style="background: #c999af; color: white; border: none; padding: 10px 20px; cursor: pointer;">

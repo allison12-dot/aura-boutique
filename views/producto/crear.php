@@ -7,7 +7,7 @@
 <?php endif; ?>
 
 <div style="max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <form action="<?=base_url?>Producto/save" method="POST" enctype="multipart/form-data">
+    <form action="<?=$url_action?>" method="POST" enctype="multipart/form-data">
         
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre del producto:</label>
@@ -29,6 +29,18 @@
             <input type="number" name="stock" value="<?= isset($pro) && is_object($pro) ? $pro->stock : ''; ?>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
         </div>
 
+        <!-- Opciones de Selección de Talla -->
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Talla disponible:</label>
+            <select name="talla" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="Talla Única" <?=isset($pro) && is_object($pro) && $pro->talla == 'Talla Única' ? 'selected' : ''?>>Talla Única</option>
+                <option value="XS" <?=isset($pro) && is_object($pro) && $pro->talla == 'XS' ? 'selected' : ''?>>XS</option>
+                <option value="S" <?=isset($pro) && is_object($pro) && $pro->talla == 'S' ? 'selected' : ''?>>S</option>
+                <option value="M" <?=isset($pro) && is_object($pro) && $pro->talla == 'M' ? 'selected' : ''?>>M</option>
+                <option value="L" <?=isset($pro) && is_object($pro) && $pro->talla == 'L' ? 'selected' : ''?>>L</option>
+                <option value="XL" <?=isset($pro) && is_object($pro) && $pro->talla == 'XL' ? 'selected' : ''?>>XL</option>
+            </select>
+        </div>
 
         <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Categoría:</label>
@@ -46,11 +58,10 @@
             </select>
         </div>
 
-
         <div style="margin-bottom: 20px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Imagen del Producto:</label>
             <?php if(isset($pro) && is_object($pro) && !empty($pro->imagen)): ?>
-                <img src="<?=base_url?>uploads/images/<?=$pro->imagen?>" style="width: 80px; height: 80px; object-fit: cover;">
+                <img src="<?=base_url?>uploads/images/<?=$pro->imagen?>" style="width: 80px; height: 80px; object-fit: cover; display: block; margin-bottom: 10px; border-radius: 4px;">
             <?php endif; ?>
             <input type="file" name="imagen" accept="image/*" style="width: 100%;">
         </div>

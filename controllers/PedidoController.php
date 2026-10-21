@@ -52,4 +52,19 @@ class PedidoController {
         }
         require_once 'views/pedido/confirmado.php';
     }
+
+    public function reporteVentas() {
+        // 1. Verifica de forma directa que solo el administrador pueda ingresar
+        if (!isset($_SESSION['admin'])) {
+            header("Location:" . base_url);
+            exit();
+        }
+        
+        // 2. Llama al modelo de pedidos para obtener los datos
+        $pedido = new Pedido();
+        $ventas = $pedido->getAll(); // Obtiene todos los pedidos/ventas
+
+        // 3. Carga la vista donde se mostrará la tabla de ventas
+        require_once 'views/pedido/reporte_ventas.php';
+    }
 }

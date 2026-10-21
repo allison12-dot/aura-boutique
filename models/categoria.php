@@ -22,8 +22,21 @@ class Categoria {
     }
 
     public function save() {
-        $sql = "INSERT INTO categorias VALUES(NULL, '{$this->nombre}');";
+        $sql = "INSERT INTO categorias (nombre) VALUES('{$this->nombre}');";
         $save = $this->db->query($sql);
         return $save ? true : false;
+    }
+
+    public function delete() {
+        $sql = "DELETE FROM categorias WHERE id_categoria = {$this->getId()};";
+        $delete = $this->db->query($sql);
+
+        // Fallback por si en la base de datos la columna id se llama 'id' en lugar de 'id_categoria'
+        if (!$delete) {
+            $sql = "DELETE FROM categorias WHERE id = {$this->getId()};";
+            $delete = $this->db->query($sql);
+        }
+
+        return $delete ? true : false;
     }
 }

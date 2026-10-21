@@ -20,8 +20,22 @@
                 <p style="color: #e47a9d; font-size: 0.85rem; margin-bottom: 10px; height: 38px; overflow: hidden;"><?=$product->descripcion?></p>
 
                 <div>
-                    <p style="color: #b16e4b; font-weight: bold; font-size: 1.2rem; margin-bottom: 12px;">$<?=number_format($product->precio, 2)?></p>
-                    <a href="<?=base_url?>carrito/add&id=<?=$product->id_producto?>" style="background: #f3abc8; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: block; font-weight: bold;">Comprar</a>
+                    <p style="color: #b16e4b; font-weight: bold; font-size: 1.2rem; margin-bottom: 8px;">$<?=number_format($product->precio, 2)?></p>
+                    
+                    <!-- Formulario con selector de talla para el cliente -->
+                    <form action="<?=base_url?>carrito/add&id=<?=$product->id_producto?>" method="POST">
+                        <div style="margin-bottom: 10px;">
+                            <label for="talla_<?=$product->id_producto?>" style="font-size: 0.8rem; color: #b16e4b; font-weight: bold; display: block; margin-bottom: 3px;">Selecciona tu Talla:</label>
+                            <select name="talla" id="talla_<?=$product->id_producto?>" style="width: 100%; padding: 5px; border: 1px solid #f3abc8; border-radius: 4px; color: #4e1e04; font-weight: 500; background-color: #fff1f5;" required>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M" selected>M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <button type="submit" style="background: #f3abc8; color: white; padding: 8px 15px; border: none; border-radius: 4px; display: block; font-weight: bold; width: 100%; cursor: pointer;">Comprar 🛒</button>
+                    </form>
                 </div>
 
             </div>

@@ -67,3 +67,88 @@ body {
     padding: 1rem;
     font-size: 0.9rem;
 }
+
+/* ==========================================
+   Estilos de la Modal - Tratamiento de Datos
+   ========================================== */
+.modal-datos-overlay {
+    display: none; 
+    position: fixed; 
+    z-index: 99999; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(3px);
+}
+
+.modal-datos-content {
+    background-color: #ffffff;
+    margin: 12% auto; 
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    animation: fadeInModal 0.3s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-datos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-datos-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.modal-datos-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-datos-close:hover {
+    color: #000;
+}
+
+.modal-datos-body p {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+    text-align: justify;
+}
+
+.modal-datos-footer {
+    text-align: right;
+}
+
+.btn-modal-aceptar {
+    background-color: #c999af;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-modal-aceptar:hover {
+    background-color: #b08197;
+}

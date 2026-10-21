@@ -17,14 +17,28 @@ class UsuarioController {
 
     public function save() {
         if (isset($_POST)) {
+            $nombre = $_POST['nombre'] ?? false;
+            $apellidos = $_POST['apellidos'] ?? false;
+            $email = $_POST['email'] ?? false;
+            $password = $_POST['password'] ?? false;
+
+            // Expresión regular: Mínimo 8 caracteres, al menos 1 letra, 1 número y 1 carácter especial
+            $patron_password = '/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+
+            // Validar que la contraseña cumpla con la regla en el servidor
+            if (!$password || !preg_match($patron_password, $password)) {
+                echo "<h2 style='color: red; text-align: center; margin-top: 30px;'>La contraseña debe tener mínimo 8 caracteres, incluir letras, al menos un número y un carácter especial (@$!%*?&).</h2>";
+                return;
+            }
+
             $usuario = new Usuario();
-            $usuario->setNombre($_POST['nombre']);
-            $usuario->setApellidos($_POST['apellidos']);
-            $usuario->setEmail($_POST['email']);
-            $usuario->setPassword($_POST['password']);
+            $usuario->setNombre($nombre);
+            $usuario->setApellidos($apellidos);
+            $usuario->setEmail($email);
+            $usuario->setPassword($password);
 
             $save = $usuario->save();
-            
+
             if ($save) {
                 echo "<h2 style='color: green; text-align: center; margin-top: 30px;'>¡Registro completado con éxito!</h2>";
             } else {
@@ -37,14 +51,16 @@ class UsuarioController {
         if (isset($_POST)) {
             $usuario = new Usuario();
             $usuario->setEmail($_POST['email']);
-            
+
             $identity = $usuario->login($_POST['password']);
 
             if ($identity && is_object($identity)) {
                 $_SESSION['identity'] = $identity;
 
-                // Verificamos si id_rol es 1 (Administrador)
-                if ($identity->id_rol == 1) {
+                // Verificamos si id_rol es 1 (Administrador) o si la propiedad es 'rol'
+                if (isset($identity->id_rol) && $identity->id_rol == 1) {
+                    $_SESSION['admin'] = true;
+                } elseif (isset($identity->rol) && $identity->rol == 'admin') {
                     $_SESSION['admin'] = true;
                 }
             } else {
@@ -62,5 +78,74 @@ class UsuarioController {
             unset($_SESSION['admin']);
         }
         header("Location: " . base_url);
+    }
+
+    public function dashboard() {
+        // Verificar si es administrador
+        if (!isset($_SESSION['admin'])) {
+            header("Location: " . base_url);
+            exit();
+        }
+
+        $db = Database::connect();
+
+        // 1. Total de productos
+        $num_productos = $db->query("SELECT COUNT(*) as total FROM productos")->fetch_object()->total;
+
+        // 2. Total de pedidos
+        $num_pedidos = $db->query("SELECT COUNT(*) as total FROM pedidos")->fetch_object()->total;
+
+        // 3. Inspeccionar columnas de la tabla 'pedidos'
+        $total_ventas = 0;
+        $columnas_pedidos = $db->query("SHOW COLUMNS FROM pedidos");
+        $col_monto = null;
+        $col_fk_usuario = null;
+
+        if ($columnas_pedidos) {
+            while ($col = $columnas_pedidos->fetch_object()) {
+                if (in_array($col->Field, ['total', 'coste', 'monto', 'precio_total'])) {
+                    $col_monto = $col->Field;
+                }
+                if (in_array($col->Field, ['usuario_id', 'id_usuario', 'usuario'])) {
+                    $col_fk_usuario = $col->Field;
+                }
+            }
+        }
+
+        if ($col_monto) {
+            $res_ventas = $db->query("SELECT SUM($col_monto) as total FROM pedidos");
+            if ($res_ventas) {
+                $total_ventas = $res_ventas->fetch_object()->total ?? 0;
+            }
+        }
+
+        // 4. Inspeccionar columna de clave primaria en 'usuarios'
+        $columnas_usuarios = $db->query("SHOW COLUMNS FROM usuarios");
+        $col_pk_usuario = 'id_usuario'; // Valor por defecto común
+
+        if ($columnas_usuarios) {
+            while ($col = $columnas_usuarios->fetch_object()) {
+                if ($col->Key == 'PRI') {
+                    $col_pk_usuario = $col->Field;
+                    break;
+                }
+            }
+        }
+
+        // 5. Conteo de clientes registrados
+        $query_usuarios = $db->query("SELECT COUNT(*) as total FROM usuarios WHERE id_rol != 1");
+        $num_usuarios = ($query_usuarios) ? $query_usuarios->fetch_object()->total : 0;
+
+        // 6. Últimos 5 pedidos haciendo el JOIN correcto con la columna PK detectada
+        $fk_query = $col_fk_usuario ? "p.$col_fk_usuario" : "p.id_usuario";
+        $ultimos_pedidos = $db->query("
+            SELECT p.*, u.*
+            FROM pedidos p
+            LEFT JOIN usuarios u ON u.$col_pk_usuario = $fk_query
+            ORDER BY 1 DESC
+            LIMIT 5
+        ");
+
+        require_once 'views/usuario/dashboard.php';
     }
 }

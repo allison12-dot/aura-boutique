@@ -7,6 +7,7 @@ class Producto {
     private $descripcion;
     private $precio;
     private $stock;
+    private $talla;
     private $oferta;
     private $fecha;
     private $imagen;
@@ -64,6 +65,14 @@ class Producto {
         $this->stock = $this->db->real_escape_string($stock);
     }
 
+    public function getTalla() {
+        return $this->talla;
+    }
+
+    public function setTalla($talla) {
+        $this->talla = $this->db->real_escape_string($talla);
+    }
+
     public function getOferta() {
         return $this->oferta;
     }
@@ -92,6 +101,7 @@ class Producto {
         $productos = $this->db->query("SELECT * FROM productos ORDER BY id_producto DESC;");
         return $productos;
     }
+
     public function getOne() {
         $producto = $this->db->query("SELECT * FROM productos WHERE id_producto = {$this->id}");
         return $producto->fetch_object();
@@ -99,15 +109,18 @@ class Producto {
 
     public function save() {
         $imagen = $this->getImagen() ? "'{$this->getImagen()}'" : "NULL";
+        $talla = $this->getTalla() ? "'{$this->getTalla()}'" : "NULL";
         
-        $sql = "INSERT INTO productos (id_categoria, nombre, descripcion, precio, stock, imagen, estado, fecha_creacion) 
-                VALUES({$this->getCategoriaId()}, '{$this->getNombre()}', '{$this->getDescripcion()}', {$this->getPrecio()}, {$this->getStock()}, {$imagen}, 'activo', CURDATE());";
+        $sql = "INSERT INTO productos (id_categoria, nombre, descripcion, precio, stock, talla, imagen, estado, fecha_creacion) 
+                VALUES({$this->getCategoriaId()}, '{$this->getNombre()}', '{$this->getDescripcion()}', {$this->getPrecio()}, {$this->getStock()}, {$talla}, {$imagen}, 'activo', CURDATE());";
         
         return $this->db->query($sql) ? true : false;
     }
 
     public function edit() {
-        $sql = "UPDATE productos SET nombre='{$this->getNombre()}', descripcion='{$this->getDescripcion()}', precio={$this->getPrecio()}, stock={$this->getStock()}, categoria_id={$this->getCategoriaId()}";
+        $talla = $this->getTalla() ? "'{$this->getTalla()}'" : "NULL";
+
+        $sql = "UPDATE productos SET nombre='{$this->getNombre()}', descripcion='{$this->getDescripcion()}', precio={$this->getPrecio()}, stock={$this->getStock()}, talla={$talla}, id_categoria={$this->getCategoriaId()}";
 
         if ($this->getImagen() != null) {
             $sql .= ", imagen='{$this->getImagen()}'";
@@ -118,7 +131,6 @@ class Producto {
         return $this->db->query($sql) ? true : false;
     }
 
-
     public function delete() {
         $sql = "DELETE FROM productos WHERE id_producto={$this->id};";
         $delete = $this->db->query($sql);
@@ -128,5 +140,12 @@ class Producto {
             $result = true;
         }
         return $result;
+    }
+
+    public function getBusqueda($busqueda) {
+        $busqueda = $this->db->real_escape_string($busqueda);
+        $sql = "SELECT * FROM productos WHERE nombre LIKE '%{$busqueda}%' ORDER BY id_producto DESC;";
+        $productos = $this->db->query($sql);
+        return $productos;
     }
 }

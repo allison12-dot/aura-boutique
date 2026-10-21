@@ -9,6 +9,7 @@
             <tr style="background-color: #f3abc8; color: white; text-align: left;">
                 <th style="padding: 12px 15px;">Imagen</th>
                 <th style="padding: 12px 15px;">Nombre</th>
+                <th style="padding: 12px 15px;">Talla</th>
                 <th style="padding: 12px 15px;">Precio</th>
                 <th style="padding: 12px 15px;">Unidades</th>
                 <th style="padding: 12px 15px;">Acciones</th>
@@ -32,6 +33,11 @@
                         <a href="<?=base_url?>producto/ver&id=<?=$producto->id_producto?>" style="color: #b16e4b; text-decoration: none;">
                             <?=$producto->nombre?>
                         </a>
+                    </td>
+                    <td style="padding: 10px 15px; font-weight: bold; color: #a8627a;">
+                        <span style="background: #fff1f5; border: 1px solid #f3abc8; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;">
+                            <?=$elemento['talla']?>
+                        </span>
                     </td>
                     <td style="padding: 10px 15px; color: #b16e4b; font-weight: bold;">
                         $<?=number_format($producto->precio, 2)?>

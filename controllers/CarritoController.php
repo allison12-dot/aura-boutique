@@ -20,10 +20,14 @@ class CarritoController {
             exit();
         }
 
+        // CAPTURAR LA TALLA SELECCIONADA POR EL CLIENTE (M por defecto si no envía)
+        $talla = isset($_POST['talla']) ? $_POST['talla'] : 'M';
+
         if (isset($_SESSION['carrito'])) {
             $counter = 0;
             foreach ($_SESSION['carrito'] as $indice => $elemento) {
-                if ($elemento['id_producto'] == $producto_id) {
+                // Comprobar que sea el mismo producto Y la misma talla
+                if ($elemento['id_producto'] == $producto_id && $elemento['talla'] == $talla) {
                     $_SESSION['carrito'][$indice]['unidades']++;
                     $counter++;
                 }
@@ -40,6 +44,7 @@ class CarritoController {
                     "id_producto" => $producto_data->id_producto,
                     "precio" => $producto_data->precio,
                     "unidades" => 1,
+                    "talla" => $talla, // GUARDAMOS LA TALLA EN EL CARRITO
                     "producto" => $producto_data
                 );
             }

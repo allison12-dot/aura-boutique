@@ -52,13 +52,14 @@ class ProductoController {
         }
     }
 
-   public function save() {
+    public function save() {
         if (isset($_SESSION['admin']) && $_POST) {
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : false;
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : false;
             $precio = isset($_POST['precio']) ? $_POST['precio'] : false;
             $stock = isset($_POST['stock']) ? $_POST['stock'] : false;
             $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : false;
+            $talla = isset($_POST['talla']) ? $_POST['talla'] : false; // OBTENEMOS LA TALLA DEL FORMULARIO
 
             if ($nombre && $descripcion && $precio && $stock && $categoria) {
                 $producto = new Producto();
@@ -67,6 +68,11 @@ class ProductoController {
                 $producto->setPrecio($precio);
                 $producto->setStock($stock);
                 $producto->setCategoriaId($categoria);
+                
+                // ASIGNAMOS LA TALLA AL MODELO
+                if ($talla) {
+                    $producto->setTalla($talla);
+                }
 
                 // Subida de imagen
                 if (isset($_FILES['imagen']) && !empty($_FILES['imagen']['name'])) {
@@ -116,5 +122,20 @@ class ProductoController {
 
         require_once 'views/producto/catalogo.php';
     }
-}
 
+    // MÉTODO PARA LA BUSQUEDA DE PRODUCTOS
+    public function buscar() {
+        if (isset($_POST['busqueda'])) {
+            $busqueda = trim($_POST['busqueda']);
+            
+            $producto = new Producto();
+            $productos = $producto->getBusqueda($busqueda);
+            
+            require_once 'views/layout/header.php';
+            require_once 'views/producto/busqueda.php';
+            require_once 'views/layout/footer.php';
+        } else {
+            header("Location: " . base_url);
+        }
+    }
+}

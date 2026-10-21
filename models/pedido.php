@@ -35,16 +35,21 @@ class Pedido {
     public function getCoste() { return $this->coste; }
     public function setCoste($coste) { $this->coste = $coste; }
 
+    // Guardar el pedido en la base de datos
     public function save() {
-        $sql = "INSERT INTO pedidos VALUES(NULL, {$this->getUsuarioId()}, '{$this->getDepartamento()}', '{$this->getCiudad()}', '{$this->getDireccion()}', {$this->getCoste()}, 'confirm', CURDATE(), CURTIME());";
+        $sql = "INSERT INTO pedidos (id_usuario, departamento, ciudad, direccion, coste, estado, fecha, hora) "
+     . "VALUES({$this->getUsuarioId()}, '{$this->getDepartamento()}', '{$this->getCiudad()}', '{$this->getDireccion()}', {$this->getCoste()}, 'confirm', CURDATE(), CURTIME());";
         $save = $this->db->query($sql);
 
         if ($save) {
             return true;
+        } else {
+            echo "Error en MySQL al guardar pedido: " . $this->db->error;
+            die();
         }
-        return false;
     }
 
+    // Guardar el detalle de los productos en lineas_pedidos
     public function save_linea() {
         $sql = "SELECT LAST_INSERT_ID() as 'pedido';";
         $query = $this->db->query($sql);
@@ -58,5 +63,12 @@ class Pedido {
         }
 
         return true;
+    }
+
+    // Consultar todos los pedidos directamente
+    public function getAll() {
+        $sql = "SELECT * FROM pedidos;";
+        $pedidos = $this->db->query($sql);
+        return $pedidos;
     }
 }

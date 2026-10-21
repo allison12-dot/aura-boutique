@@ -34,4 +34,14 @@ class CategoriaController {
         }
         header("Location: " . base_url . "categoria/index");
     }
+
+    public function delete() {
+        if (isset($_SESSION['admin']) && isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $categoria = new Categoria();
+            $categoria->setId($id);
+            $categoria->delete();
+        }
+        header("Location: " . base_url . "categoria/index");
+    }
 }
