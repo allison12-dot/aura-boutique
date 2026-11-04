@@ -24,7 +24,7 @@
             font-size: 2.2rem; 
             letter-spacing: 2px; 
             white-space: nowrap;
-            margin: 0 auto;         
+            margin: 0 auto;        
         }
         
         nav { 
@@ -152,7 +152,7 @@
         .equipo-foto {
             width: 100%;
             max-height: 250px;
-            object-fit: contain; /* Muestra la foto completa ajustada al marco */
+            object-fit: contain;
             background-color: #fff;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -214,9 +214,9 @@
             <a href="#" id="btn-quienes-somos">Quiénes somos 👥</a>
             <a href="#" id="btn-tratamiento-datos">Tratamiento de datos 📋</a>
 
-            <!-- Formulario de Búsqueda Integrado -->
-            <form action="<?=base_url?>producto/buscar" method="POST" class="search-form">
-                <input type="text" name="busqueda" placeholder="Buscar producto..." class="search-input" required>
+            <!-- Formulario de Búsqueda adaptado con ID para AJAX -->
+            <form action="<?=base_url?>producto/buscar" method="POST" class="search-form" id="search-form-ajax">
+                <input type="text" name="busqueda" id="input-buscador-ajax" placeholder="Buscar producto..." class="search-input" autocomplete="off" required>
                 <button type="submit" class="search-btn">🔍</button>
             </form>
         </nav>
@@ -268,4 +268,44 @@
             </div>
         </div>
     </header>
+
+    <!-- Contenedor global para mostrar los resultados de la búsqueda en tiempo real -->
+    <div id="resultados-busqueda-ajax" style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; max-width: 1200px; margin: 20px auto; padding: 0 15px;"></div>
+
+    <script>
+    // Script rápido para conectar el input del header con el método busquedaAjax
+    document.addEventListener('DOMContentLoaded', function() {
+        var inputBuscador = document.getElementById('input-buscador-ajax');
+        var contenedorResultados = document.getElementById('resultados-busqueda-ajax');
+        var formBusqueda = document.getElementById('search-form-ajax');
+
+        if (formBusqueda) {
+            formBusqueda.addEventListener('submit', function(e) {
+                e.preventDefault(); // Evita recarga al dar ENTER o click en la lupa
+            });
+        }
+
+        if (inputBuscador && contenedorResultados) {
+            inputBuscador.addEventListener('keyup', function() {
+                var query = inputBuscador.value.trim();
+
+                if (query.length === 0) {
+                    contenedorResultados.innerHTML = "";
+                    return;
+                }
+
+                fetch(`<?=base_url?>producto/busquedaAjax&q=${encodeURIComponent(query)}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        contenedorResultados.innerHTML = html;
+                        if (typeof configurarBotonesFavoritos === 'function') {
+                            configurarBotonesFavoritos();
+                        }
+                    })
+                    .catch(error => console.error("Error en búsqueda AJAX:", error));
+            });
+        }
+    });
+    </script>
+
     <div class="container">
