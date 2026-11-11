@@ -27,24 +27,37 @@ class UsuarioController {
 
             // Validar que la contraseña cumpla con la regla en el servidor
             if (!$password || !preg_match($patron_password, $password)) {
-                echo "<h2 style='color: red; text-align: center; margin-top: 30px;'>La contraseña debe tener mínimo 8 caracteres, incluir letras, al menos un número y un carácter especial (@$!%*?&).</h2>";
-                return;
+                $_SESSION['register'] = "failed_password";
+                header("Location: " . base_url . "usuario/registro");
+                exit();
             }
 
-            $usuario = new Usuario();
-            $usuario->setNombre($nombre);
-            $usuario->setApellidos($apellidos);
-            $usuario->setEmail($email);
-            $usuario->setPassword($password);
+            if ($nombre && $apellidos && $email && $password) {
+                $usuario = new Usuario();
+                $usuario->setNombre($nombre);
+                $usuario->setApellidos($apellidos);
+                $usuario->setEmail($email);
+                $usuario->setPassword($password);
 
-            $save = $usuario->save();
-
-            if ($save) {
-                echo "<h2 style='color: green; text-align: center; margin-top: 30px;'>¡Registro completado con éxito!</h2>";
+                try {
+                    $save = $usuario->save();
+                    if ($save) {
+                        $_SESSION['register'] = "complete";
+                    } else {
+                        $_SESSION['register'] = "failed";
+                    }
+                } catch (Exception $e) {
+                    // Captura si el correo ya está duplicado en la base de datos
+                    $_SESSION['register'] = "duplicate";
+                }
             } else {
-                echo "<h2 style='color: red; text-align: center; margin-top: 30px;'>Error al registrar el usuario.</h2>";
+                $_SESSION['register'] = "failed";
             }
         }
+        
+        // Redirigir siempre al formulario para mostrar la notificación tipo alerta
+        header("Location: " . base_url . "usuario/registro");
+        exit();
     }
 
     public function loginProcess() {
